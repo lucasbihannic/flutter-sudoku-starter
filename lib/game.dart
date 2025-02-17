@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_api/sudoku_api.dart';
 import 'internal_grid.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 class Game extends StatefulWidget {
   const Game({super.key, required this.title});
@@ -39,11 +40,31 @@ class _GameState extends State<Game> {
   void setValue(int value) {
     if (puzzle != null && selectedRow != null && selectedCol != null) {
       var cell = puzzle!.board()!.cellAt(Position(row: selectedRow!, column: selectedCol!));
+      var correctValue = puzzle!.solvedBoard()?.matrix()?[selectedRow!][selectedCol!].getValue();
+
       if (!(cell.prefill() ?? false)) {
-        cell.setValue(value);
-        setState(() {});
+        if (value == correctValue) {
+          cell.setValue(value);
+          setState(() {});
+        } else {
+          showErrorMessage(value, correctValue ?? 0);
+        }
       }
     }
+  }
+
+  void showErrorMessage(int enteredValue, int correctValue) {
+    final snackBar = SnackBar(
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(
+        title: "Erreur !",
+        message: "La valeur $enteredValue est incorrecte. La valeur attendue est $correctValue.",
+        contentType: ContentType.failure,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
