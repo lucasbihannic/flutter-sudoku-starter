@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_starter/game.dart';
+import 'package:sudoku_starter/end.dart';
+import 'package:sudoku_starter/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +27,12 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const Game(title: 'Flutter Extrem Sudoku Pro +'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/game': (context) => const Game(title: "Flutter Extrem Sudoku Pro +"),
+        '/end': (context) => const EndScreen(),
+      }
     );
   }
 }

@@ -46,6 +46,7 @@ class _GameState extends State<Game> {
         if (value == correctValue) {
           cell.setValue(value);
           setState(() {});
+          checkVictory();
         } else {
           showErrorMessage(value, correctValue ?? 0);
         }
@@ -66,6 +67,27 @@ class _GameState extends State<Game> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+  void checkVictory() {
+    bool isComplete = true;
+    
+    for (int row = 0; row < 9; row++) {
+      for (int col = 0; col < 9; col++) {
+        int userValue = puzzle!.board()!.matrix()![row][col].getValue() ?? -1;
+        int correctValue = puzzle!.solvedBoard()!.matrix()![row][col].getValue() ?? -1;
+        
+        if (userValue != correctValue) {
+          isComplete = false;
+          break;
+        }
+      }
+    }
+  if (isComplete) {
+    Future.delayed(Duration(milliseconds: 500), () {
+      Navigator.pushNamed(context, '/end');
+    });
+  }
+}
 
   @override
   Widget build(BuildContext context) {
