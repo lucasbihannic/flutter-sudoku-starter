@@ -1,4 +1,6 @@
-# sudoku_starter
+# sudoku_starter 
+
+# Lucas Bihannic
 
 Sudoku game
 
