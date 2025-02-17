@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudoku_api/src/Puzzle.dart';
-import 'package:sudoku_api/src/models/PuzzleOptions.dart';
+import 'package:sudoku_api/sudoku_api.dart';
 import 'internal_grid.dart';
 
 class Game extends StatefulWidget {
@@ -14,6 +13,8 @@ class Game extends StatefulWidget {
 
 class _GameState extends State<Game> {
   Puzzle? puzzle;
+  int? selectedRow;
+  int? selectedCol;
 
   @override
   void initState() {
@@ -22,10 +23,17 @@ class _GameState extends State<Game> {
   }
 
   Future<void> generateSudoku() async {
-    PuzzleOptions options = PuzzleOptions(patternName: "winter"); 
+    PuzzleOptions options = PuzzleOptions(patternName: "winter");
     puzzle = Puzzle(options);
-    await puzzle!.generate(); 
-    setState(() {}); 
+    await puzzle!.generate();
+    setState(() {});
+  }
+
+  void selectCell(int row, int col) {
+    setState(() {
+      selectedRow = row;
+      selectedCol = col;
+    });
   }
 
   @override
@@ -40,7 +48,7 @@ class _GameState extends State<Game> {
         title: Text(widget.title),
       ),
       body: puzzle == null
-          ? const Center(child: CircularProgressIndicator()) 
+          ? const Center(child: CircularProgressIndicator())
           : Center(
               child: SizedBox(
                 height: boxSize * 3,
@@ -54,7 +62,14 @@ class _GameState extends State<Game> {
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.blueAccent),
                       ),
-                      child: InternalGrid(boxSize: boxSize, puzzle: puzzle!, blockIndex: x), 
+                      child: InternalGrid(
+                        boxSize: boxSize,
+                        puzzle: puzzle!,
+                        blockIndex: x,
+                        selectedRow: selectedRow,
+                        selectedCol: selectedCol,
+                        onCellTap: selectCell,
+                      ),
                     );
                   }),
                 ),
