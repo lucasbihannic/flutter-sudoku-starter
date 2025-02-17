@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'internal_grid.dart'; // Import du fichier
 
 class Game extends StatefulWidget {
   const Game({super.key, required this.title});
@@ -34,6 +35,7 @@ class _GameState extends State<Game> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.blueAccent),
                 ),
+                child: InternalGrid(boxSize: boxSize), // Ajout de la grille interne
               );
             }),
           ),
