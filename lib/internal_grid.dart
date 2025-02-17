@@ -26,8 +26,11 @@ class InternalGrid extends StatelessWidget {
       children: List.generate(9, (cellIndex) {
         int row = (blockIndex ~/ 3) * 3 + (cellIndex ~/ 3);
         int col = (blockIndex % 3) * 3 + (cellIndex % 3);
-        int value = puzzle.board()?.matrix()?[row][col].getValue() ?? 0;
+        var cell = puzzle.board()?.matrix()?[row][col];
+        int value = cell?.getValue() ?? 0;
         bool isSelected = (selectedRow == row && selectedCol == col);
+        bool isPrefilled = cell?.prefill() ?? false;
+
 
         return InkWell(
           onTap: () => onCellTap(row, col),
@@ -41,7 +44,11 @@ class InternalGrid extends StatelessWidget {
             child: Center(
               child: Text(
                 value == 0 ? "" : value.toString(),
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isPrefilled ? Colors.black : Colors.blue,
+                ),
               ),
             ),
           ),

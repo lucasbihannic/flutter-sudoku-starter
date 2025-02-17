@@ -36,6 +36,16 @@ class _GameState extends State<Game> {
     });
   }
 
+  void setValue(int value) {
+    if (puzzle != null && selectedRow != null && selectedCol != null) {
+      var cell = puzzle!.board()!.cellAt(Position(row: selectedRow!, column: selectedCol!));
+      if (!(cell.prefill() ?? false)) {
+        cell.setValue(value);
+        setState(() {});
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height / 2;
@@ -47,34 +57,77 @@ class _GameState extends State<Game> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: puzzle == null
-          ? const Center(child: CircularProgressIndicator())
-          : Center(
-              child: SizedBox(
-                height: boxSize * 3,
-                width: boxSize * 3,
-                child: GridView.count(
-                  crossAxisCount: 3,
-                  children: List.generate(9, (x) {
-                    return Container(
-                      width: boxSize,
-                      height: boxSize,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueAccent),
-                      ),
-                      child: InternalGrid(
-                        boxSize: boxSize,
-                        puzzle: puzzle!,
-                        blockIndex: x,
-                        selectedRow: selectedRow,
-                        selectedCol: selectedCol,
-                        onCellTap: selectCell,
-                      ),
-                    );
-                  }),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          puzzle == null
+              ? const Center(child: CircularProgressIndicator())
+              : Center(
+                  child: SizedBox(
+                    height: boxSize * 3,
+                    width: boxSize * 3,
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      children: List.generate(9, (x) {
+                        return Container(
+                          width: boxSize,
+                          height: boxSize,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blueAccent),
+                          ),
+                          child: InternalGrid(
+                            boxSize: boxSize,
+                            puzzle: puzzle!,
+                            blockIndex: x,
+                            selectedRow: selectedRow,
+                            selectedCol: selectedCol,
+                            onCellTap: selectCell,
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
                 ),
+          const SizedBox(height: 20),
+          Column(
+            children: [
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: List.generate(5, (index) {
+                  int value = index + 1;
+                  return ElevatedButton(
+                    onPressed: () => setValue(value),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    ),
+                    child: Text(value.toString(), style: const TextStyle(fontSize: 20)),
+                  );
+                }),
               ),
-            ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: List.generate(4, (index) {
+                  int value = index + 6;
+                  return ElevatedButton(
+                    onPressed: () => setValue(value),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    ),
+                    child: Text(value.toString(), style: const TextStyle(fontSize: 20)),
+                  );
+                }),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
